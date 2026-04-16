@@ -169,17 +169,13 @@ async def test_input_plugin():
     ]
     print("Testing InputGuardrailPlugin:")
     for msg in test_messages:
-        user_content = types.Content(
-            role="user", parts=[types.Part.from_text(text=msg)]
-        )
-        result = await plugin.on_user_message_callback(
-            invocation_context=None, user_message=user_content
-        )
-        status = "BLOCKED" if result else "PASSED"
+        is_safe, reason = plugin.check(msg)
+        status = "PASSED" if is_safe else "BLOCKED"
         print(f"  [{status}] '{msg[:60]}'")
-        if result and result.parts:
-            print(f"           -> {result.parts[0].text[:80]}")
-    print(f"\nStats: {plugin.blocked_count} blocked / {plugin.total_count} total")
+        if not is_safe:
+            print(f"           -> {reason}")
+    stats = plugin.get_stats()
+    print(f"\nStats: {stats['blocked']} blocked / {stats['total_checked']} total")
 
 
 if __name__ == "__main__":
