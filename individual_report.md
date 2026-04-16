@@ -68,24 +68,6 @@ Nhận xét:
 - Khi nào nên trả lời kèm disclaimer:
   - Câu hỏi hợp lệ nhưng độ tin cậy thấp (dữ liệu thiếu, policy mơ hồ), cần hướng dẫn người dùng xác minh thêm.
 
-## 6) Kiểm tra Deliverables
-
-### Phần A - Notebook/Code (60 điểm)
-
-- End-to-end chạy được: Đạt
-- Có output test cho Rate Limiter, Input/Output Guardrails, LLM-as-Judge: Đạt (đã xác nhận chạy live non-economy cho Part 2)
-- File audit_log.json >= 20 entries: Đạt (32 entries)
-- Comment/docstring cho hàm và class: Đạt một phần (hầu hết hàm/class có docstring)
-
-### Phần B - Báo cáo cá nhân (40 điểm)
-
-Báo cáo này đã trả lời đủ 5 mục bắt buộc:
-- Phân tích lớp bảo vệ
-- False positive
-- Gap analysis (3 prompts)
-- Production readiness
-- Ethical reflection
-
 ## Phụ lục - Đường dẫn artifact
 
 - src/security_audit.json
