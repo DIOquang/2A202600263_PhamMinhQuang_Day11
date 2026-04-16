@@ -1,91 +1,75 @@
-# Day-11-Guardrails-HITL-Responsible-AI
+# Ngày 11 - Guardrails, HITL & Trí tuệ nhân tạo có trách nhiệm
 
-Day 11 — Guardrails, HITL & Responsible AI: How to make agent applications safe?
+Ngày 11 — Guardrails, HITL & Trí tuệ nhân tạo có trách nhiệm: Làm thế nào để làm cho các ứng dụng AI agent an toàn?
 
-## Objectives
+## Mục tiêu
 
-- Understand why guardrails are mandatory for AI products
-- Implement input guardrails (injection detection, topic filter)
-- Implement output guardrails (content filter, LLM-as-Judge)
-- Use NeMo Guardrails (NVIDIA) with Colang
-- Design HITL workflow with confidence-based routing
-- Perform basic red teaming
+- Hiểu tại sao guardrails là bắt buộc đối với các sản phẩm AI
+- Triển khai input guardrails (phát hiện tiêm injection, bộ lọc chủ đề)
+- Triển khai output guardrails (bộ lọc nội dung, LLM-as-Judge)
+- Sử dụng NeMo Guardrails (NVIDIA) với Colang
+- Thiết kế quy trình HITL với định tuyến dựa trên độ tin cậy
+- Thực hiện kiểm tra an niệm cơ bản
 
-## Project Structure
+## Cấu trúc dự án
 
 ```
 Day-11-Guardrails-HITL-Responsible-AI/
 ├── notebooks/
-│   ├── lab11_guardrails_hitl.ipynb            # Student lab (Colab)
-│   └── lab11_guardrails_hitl_solution.ipynb   # Solution (instructor only)
-├── src/                                       # Local Python version
-│   ├── main.py                    # Entry point — run all parts or pick one
+│   ├── lab11_guardrails_hitl.ipynb            # Phòng lab sinh viên (Colab)
+│   └── lab11_guardrails_hitl_solution.ipynb   # Giải pháp (chỉ hướng dẫn viên)
+├── src/                                       # Phiên bản Python cục bộ
+│   ├── main.py                    # Điểm vào — chạy tất cả hoặc chọn một phần
 │   ├── core/
-│   │   ├── config.py              # API key setup, allowed/blocked topics
-│   │   └── utils.py               # chat_with_agent() helper
+│   │   ├── config.py              # Thiết lập khóa API, chủ đề được phép/bị chặn
+│   │   └── utils.py               # Trợ giúp chat_with_agent()
 │   ├── agents/
-│   │   └── agent.py               # Unsafe & protected agent creation
+│   │   └── agent.py               # Tạo agent không an toàn & được bảo vệ
 │   ├── attacks/
-│   │   └── attacks.py             # TODO 1-2: Adversarial prompts & AI red teaming
+│   │   └── attacks.py             # TODO 1-2: Các lời nhắc đối kháng & kiểm tra nhóm đỏ AI
 │   ├── guardrails/
-│   │   ├── input_guardrails.py    # TODO 3-5: Injection detection, topic filter, plugin
-│   │   ├── output_guardrails.py   # TODO 6-8: Content filter, LLM-as-Judge, plugin
-│   │   └── nemo_guardrails.py     # TODO 9: NeMo Guardrails with Colang
+│   │   ├── input_guardrails.py    # TODO 3-5: Phát hiện injection, bộ lọc chủ đề, plugin
+│   │   ├── output_guardrails.py   # TODO 6-8: Bộ lọc nội dung, LLM-as-Judge, plugin
+│   │   └── nemo_guardrails.py     # TODO 9: NeMo Guardrails với Colang
 │   ├── testing/
-│   │   └── testing.py             # TODO 10-11: Before/after comparison, pipeline
+│   │   └── testing.py             # TODO 10-11: So sánh trước/sau, pipeline
 │   └── hitl/
-│       └── hitl.py                # TODO 12-13: Confidence router, HITL design
+│       └── hitl.py                # TODO 12-13: Bộ định tuyến độ tin cậy, thiết kế HITL
 ├── requirements.txt
 └── README.md
 ```
 
-## Setup
+## Thiết lập
 
-### Google Colab (recommended)
-
-1. Upload `notebooks/lab11_guardrails_hitl.ipynb` to Google Colab
-2. Create a Google API Key at [Google AI Studio](https://aistudio.google.com/apikey)
-3. Save the API key in Colab Secrets as `GOOGLE_API_KEY`
-4. Run cells in order
-
-### Local (Notebook)
-
-```bash
-pip install -r requirements.txt
-export GOOGLE_API_KEY="your-api-key-here"
-jupyter notebook notebooks/lab11_guardrails_hitl.ipynb
-```
-
-### Local (Python modules — no Colab needed)
+### Cấu hình cục bộ (Python modules — không cần Colab)
 
 ```bash
 cd src/
 pip install -r ../requirements.txt
-export GOOGLE_API_KEY="your-api-key-here"
+export OPENAI_API_KEY="your-api-key-here"
 
-# Run the full lab
+# Chạy phòng lab đầy đủ
 python main.py
 
-# Or run specific parts
-python main.py --part 1    # Part 1: Attacks
-python main.py --part 2    # Part 2: Guardrails
-python main.py --part 3    # Part 3: Testing pipeline
-python main.py --part 4    # Part 4: HITL design
+# Hoặc chạy các phần cụ thể
+python main.py --part 1    # Phần 1: Các cuộc tấn công
+python main.py --part 2    # Phần 2: Guardrails
+python main.py --part 3    # Phần 3: Pipeline kiểm tra
+python main.py --part 4    # Phần 4: Thiết kế HITL
 
-# Or test individual modules
+# Hoặc kiểm tra các mô-đun riêng lẻ
 python guardrails/input_guardrails.py
 python guardrails/output_guardrails.py
 python testing/testing.py
 python hitl/hitl.py
 ```
 
-### Tools Used
+### Công cụ được sử dụng
 
-- **Google ADK** — Agent Development Kit (plugins, runners)
-- **NeMo Guardrails** — NVIDIA framework with Colang (declarative safety rules)
-- **Gemini 2.5 Flash/Flash Lite** — LLM backend (you can switch to other models if you want)
+- **OpenAI API** — ChatGPT backend (gpt-4-turbo)
+- **NeMo Guardrails** — Khung công việc NVIDIA với Colang (quy tắc an toàn khai báo)
 
-## Lab Structure (2.5 hours)
+## Cấu trúc phòng lab (2,5 giờ)
 
 | Part | Content | Duration |
 |------|---------|----------|

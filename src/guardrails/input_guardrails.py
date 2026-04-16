@@ -2,13 +2,9 @@
 Lab 11 — Part 2A: Input Guardrails
   TODO 3: Injection detection (regex)
   TODO 4: Topic filter
-  TODO 5: Input Guardrail Plugin (ADK)
+  TODO 5: Input Guardrail Plugin
 """
 import re
-
-from google.genai import types
-from google.adk.plugins import base_plugin
-from google.adk.agents.invocation_context import InvocationContext
 
 from core.config import ALLOWED_TOPICS, BLOCKED_TOPICS
 
@@ -89,64 +85,42 @@ def topic_filter(user_input: str) -> bool:
 # TODO 5: Implement InputGuardrailPlugin
 #
 # This plugin blocks bad input BEFORE it reaches the LLM.
-# Fill in the on_user_message_callback method.
-#
-# NOTE: The callback uses keyword-only arguments (after *).
-#   - user_message is types.Content (not str)
-#   - Return types.Content to block, or None to pass through
 # ============================================================
 
-class InputGuardrailPlugin(base_plugin.BasePlugin):
+class InputGuardrailPlugin:
     """Plugin that blocks bad input before it reaches the LLM."""
 
     def __init__(self):
-        super().__init__(name="input_guardrail")
+        self.name = "input_guardrail"
         self.blocked_count = 0
         self.total_count = 0
 
-    def _extract_text(self, content: types.Content) -> str:
-        """Extract plain text from a Content object."""
-        text = ""
-        if content and content.parts:
-            for part in content.parts:
-                if hasattr(part, "text") and part.text:
-                    text += part.text
-        return text
-
-    def _block_response(self, message: str) -> types.Content:
-        """Create a Content object with a block message."""
-        return types.Content(
-            role="model",
-            parts=[types.Part.from_text(text=message)],
-        )
-
-    async def on_user_message_callback(
-        self,
-        *,
-        invocation_context: InvocationContext,
-        user_message: types.Content,
-    ) -> types.Content | None:
-        """Check user message before sending to the agent.
+    def check(self, user_message: str) -> tuple[bool, str]:
+        """Check if message is safe to process.
 
         Returns:
-            None if message is safe (let it through),
-            types.Content if message is blocked (return replacement)
+            (is_safe, block_reason)
         """
         self.total_count += 1
-        text = self._extract_text(user_message)
+        text = user_message
 
         if detect_injection(text):
             self.blocked_count += 1
-            return self._block_response(
-                "Request blocked: suspected prompt-injection attempt detected. "
-                "Please ask a normal banking question."
-            )
+            return False, "Prompt injection pattern detected."
 
         if topic_filter(text):
             self.blocked_count += 1
-            return self._block_response(
-                "Request blocked: this assistant only supports VinBank-related banking topics."
-            )
+            return False, "Off-topic or dangerous request. This assistant only supports VinBank banking topics."
+
+        return True, ""
+
+    def get_stats(self) -> dict:
+        """Get guardrail statistics."""
+        return {
+            "total_checked": self.total_count,
+            "blocked": self.blocked_count,
+            "pass_rate": (1 - self.blocked_count / max(1, self.total_count)) * 100,
+        }
 
         return None
 

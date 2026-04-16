@@ -2,15 +2,25 @@
 Lab 11 — Configuration & API Key Setup
 """
 import os
+from openai import OpenAI
 
 
 def setup_api_key():
-    """Load Google API key from environment or prompt."""
-    if "GOOGLE_API_KEY" not in os.environ:
-        os.environ["GOOGLE_API_KEY"] = input("Enter Google API Key: ")
-    os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "0"
-    print("API key loaded.")
+    """Load OpenAI API key from environment or prompt."""
+    if "OPENAI_API_KEY" not in os.environ:
+        os.environ["OPENAI_API_KEY"] = input("Enter OpenAI API Key: ")
+    print("OpenAI API key loaded.")
 
+
+def get_openai_client():
+    """Get OpenAI client instance."""
+    return OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+
+# Model configuration
+OPENAI_MODEL = "gpt-4-turbo"  # or "gpt-3.5-turbo" for faster/cheaper
+JUDGE_MODEL = "gpt-4-turbo"   # for LLM-as-Judge
+MAX_TOKENS = 500
 
 # Allowed banking topics (used by topic_filter)
 ALLOWED_TOPICS = [
