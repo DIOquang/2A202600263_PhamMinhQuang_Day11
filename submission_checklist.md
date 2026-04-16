@@ -26,13 +26,13 @@
 - Rate Limiter output shown: Yes, in economy run output and [src/testing/defense_pipeline.py](src/testing/defense_pipeline.py)
 - Input Guardrails output shown: Yes, in economy run output and [src/guardrails/input_guardrails.py](src/guardrails/input_guardrails.py)
 - Output Guardrails output shown: Yes, in economy run output and [src/guardrails/output_guardrails.py](src/guardrails/output_guardrails.py)
-- LLM-as-Judge output shown: Implemented, but economy mode skips live judge calls to avoid quota
+- LLM-as-Judge output shown: Yes, validated with live non-economy run (Part 2)
 - `audit_log.json` with at least 20 entries: Yes, [src/audit_log.json](src/audit_log.json) has 32 entries
 - Clear comments/docstrings for functions and classes: Mostly yes; core functions/classes are documented in code
 
 ### Part B - Individual Report
 
-- 1-2 page Markdown/PDF report: Yes, [individual_report_economy.md](individual_report_economy.md)
+- 1-2 page Markdown/PDF report: Yes, [individual_report.md](individual_report.md)
 - Layer analysis table for Test 2: Yes
 - False positive analysis: Yes
 - 3 gap-analysis prompts: Yes
@@ -41,5 +41,5 @@
 
 ## Notes
 
-- The economy mode is designed to complete the deliverables locally without requiring additional Gemini quota.
-- If you need a live LLM-as-Judge screenshot/output for grading, rerun Part 2B or Part 3 in non-economy mode when quota is available.
+- Economy mode is useful for local completion with reduced API usage.
+- Live non-economy run for Part 2 has been completed to verify LLM-as-Judge and guardrail outputs.
